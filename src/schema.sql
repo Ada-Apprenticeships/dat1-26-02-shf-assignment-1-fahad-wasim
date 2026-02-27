@@ -47,7 +47,7 @@ CREATE TABLE staff (
     position TEXT NOT NULL CHECK (position IN ('Trainer', 'Manager', 'Receptionist', 'Maintenance')),
     hire_date DATE NOT NULL CHECK (hire_date LIKE '____-__-__'),
     location_id INTEGER NOT NULL,
-    FOREIGN KEY (location_id) REFERENCES locations(location_id)
+    FOREIGN KEY (location_id) REFERENCES locations(location_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 CREATE TABLE equipment (
@@ -58,7 +58,7 @@ CREATE TABLE equipment (
     last_maintenance_date DATE CHECK (last_maintenance_date LIKE '____-__-__'),
     next_maintenance_date DATE CHECK (next_maintenance_date LIKE '____-__-__'),
     location_id INTEGER NOT NULL,
-    FOREIGN KEY (location_id) REFERENCES locations(location_id)
+    FOREIGN KEY (location_id) REFERENCES locations(location_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 CREATE TABLE classes (
@@ -68,7 +68,7 @@ CREATE TABLE classes (
     capacity INTEGER NOT NULL CHECK (capacity > 0),
     duration INTEGER NOT NULL CHECK (duration > 0),
     location_id INTEGER NOT NULL,
-    FOREIGN KEY (location_id) REFERENCES locations(location_id)
+    FOREIGN KEY (location_id) REFERENCES locations(location_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 CREATE TABLE class_schedule (
@@ -77,8 +77,8 @@ CREATE TABLE class_schedule (
     staff_id INTEGER NOT NULL,
     start_time TEXT NOT NULL CHECK (start_time LIKE '____-__-__ __:__:__'),
     end_time TEXT NOT NULL CHECK (end_time LIKE '____-__-__ __:__:__'),
-    FOREIGN KEY (class_id) REFERENCES classes(class_id),
-    FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
+    FOREIGN KEY (class_id) REFERENCES classes(class_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (staff_id) REFERENCES staff(staff_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 CREATE TABLE memberships (
@@ -88,7 +88,7 @@ CREATE TABLE memberships (
     start_date DATE NOT NULL CHECK (start_date LIKE '____-__-__'),
     end_date DATE CHECK (end_date LIKE '____-__-__'),
     status TEXT NOT NULL CHECK (status IN ('Active', 'Inactive')),
-    FOREIGN KEY (member_id) REFERENCES members(member_id)
+    FOREIGN KEY (member_id) REFERENCES members(member_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE attendance (
@@ -97,8 +97,8 @@ CREATE TABLE attendance (
     location_id INTEGER NOT NULL,
     check_in_time TEXT NOT NULL CHECK (check_in_time LIKE '____-__-__ __:__:__'),
     check_out_time TEXT CHECK (check_out_time LIKE '____-__-__ __:__:__'),
-    FOREIGN KEY (member_id) REFERENCES members(member_id),
-    FOREIGN KEY (location_id) REFERENCES locations(location_id)
+    FOREIGN KEY (member_id) REFERENCES members(member_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (location_id) REFERENCES locations(location_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 CREATE TABLE class_attendance (
@@ -106,8 +106,8 @@ CREATE TABLE class_attendance (
     schedule_id INTEGER NOT NULL,
     member_id INTEGER NOT NULL,
     attendance_status TEXT NOT NULL CHECK (attendance_status IN ('Registered', 'Attended', 'Unattended')),
-    FOREIGN KEY (schedule_id) REFERENCES class_schedule(schedule_id),
-    FOREIGN KEY (member_id) REFERENCES members(member_id)
+    FOREIGN KEY (schedule_id) REFERENCES class_schedule(schedule_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (member_id) REFERENCES members(member_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE payments (
@@ -115,9 +115,9 @@ CREATE TABLE payments (
     member_id INTEGER NOT NULL,
     amount REAL NOT NULL CHECK (amount > 0),
     payment_date TEXT NOT NULL CHECK (payment_date LIKE '____-__-__ __:__:__'),
-    payment_method TEXT NOT NULL CHECK (payment_method IN ('Credit Card', 'Bank Transfer', 'PayPal')),
+    payment_method TEXT NOT NULL CHECK (payment_method IN ('Credit Card', 'Bank Transfer', 'PayPal', 'Cash')),
     payment_type TEXT NOT NULL CHECK (payment_type IN ('Monthly membership fee', 'Day pass')),
-    FOREIGN KEY (member_id) REFERENCES members(member_id)
+    FOREIGN KEY (member_id) REFERENCES members(member_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE personal_training_sessions (
@@ -128,8 +128,8 @@ CREATE TABLE personal_training_sessions (
     start_time TEXT NOT NULL CHECK (start_time LIKE '__:__:__'),
     end_time TEXT NOT NULL CHECK (end_time LIKE '__:__:__'),
     notes TEXT,
-    FOREIGN KEY (member_id) REFERENCES members(member_id),
-    FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
+    FOREIGN KEY (member_id) REFERENCES members(member_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (staff_id) REFERENCES staff(staff_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 CREATE TABLE member_health_metrics (
@@ -140,7 +140,7 @@ CREATE TABLE member_health_metrics (
     body_fat_percentage REAL CHECK (body_fat_percentage >= 0 AND body_fat_percentage <= 100),
     muscle_mass REAL CHECK (muscle_mass > 0),
     bmi REAL CHECK (bmi > 0),
-    FOREIGN KEY (member_id) REFERENCES members(member_id)
+    FOREIGN KEY (member_id) REFERENCES members(member_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE equipment_maintenance_log (
@@ -149,8 +149,8 @@ CREATE TABLE equipment_maintenance_log (
     maintenance_date DATE NOT NULL CHECK (maintenance_date LIKE '____-__-__'),
     description TEXT NOT NULL,
     staff_id INTEGER NOT NULL,
-    FOREIGN KEY (equipment_id) REFERENCES equipment(equipment_id),
-    FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
+    FOREIGN KEY (equipment_id) REFERENCES equipment(equipment_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (staff_id) REFERENCES staff(staff_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 .tables

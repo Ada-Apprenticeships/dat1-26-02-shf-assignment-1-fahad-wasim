@@ -2,12 +2,7 @@
 .mode column
 
 -- 1.1
-SELECT 
-    member_id,
-    first_name,
-    last_name,
-    email,
-    join_date
+SELECT member_id, first_name, last_name, email, join_date
 FROM members;
 
 -- 1.2
@@ -23,32 +18,35 @@ FROM members;
 
 -- 1.4
 SELECT 
-    m.member_id,
-    m.first_name,
-    m.last_name,
-    COUNT(ca.class_attendance_id) AS registration_count
-FROM members m
-JOIN class_attendance ca 
-    ON m.member_id = ca.member_id
-GROUP BY m.member_id
-ORDER BY registration_count DESC
+    members.member_id,
+    members.first_name,
+    members.last_name,
+    COUNT(class_attendance.class_attendance_id) AS registrations
+FROM members
+JOIN class_attendance 
+    ON members.member_id = class_attendance.member_id
+GROUP BY 
+    members.member_id, 
+    members.first_name, 
+    members.last_name
+ORDER BY registrations DESC
 LIMIT 1;
 
 -- 1.5
 SELECT 
-    m.member_id,
-    m.first_name,
-    m.last_name,
-    COUNT(ca.class_attendance_id) AS registration_count
-FROM members m
-LEFT JOIN class_attendance ca 
-    ON m.member_id = ca.member_id
-GROUP BY m.member_id
-ORDER BY registration_count ASC
+    members.member_id,
+    members.first_name,
+    members.last_name,
+    COUNT(class_attendance.class_attendance_id) AS registrations
+FROM members
+LEFT JOIN class_attendance
+    ON members.member_id = class_attendance.member_id
+GROUP BY members.member_id
+ORDER BY registrations ASC
 LIMIT 1;
 
 -- 1.6
-SELECT COUNT(*) AS members_with_two_or_more_attendances
+SELECT COUNT(*) AS two_or_more_attendance_member_count
 FROM (
     SELECT member_id
     FROM class_attendance

@@ -33,5 +33,4 @@ SELECT
     memberships.end_date
 FROM memberships
 JOIN members ON memberships.member_id = members.member_id
-WHERE memberships.end_date >= '2025-01-01'
-AND memberships.end_date <= '2025-12-31';
+WHERE memberships.end_date >= '2025-01-01' AND memberships.end_date <= '2025-12-31';

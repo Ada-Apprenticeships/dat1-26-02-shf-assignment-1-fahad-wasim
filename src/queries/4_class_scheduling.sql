@@ -20,8 +20,7 @@ SELECT
 FROM classes
 JOIN class_schedule ON classes.class_id = class_schedule.class_id
 LEFT JOIN class_attendance 
-    ON class_schedule.schedule_id = class_attendance.schedule_id
-    AND class_attendance.attendance_status = 'Registered'
+    ON class_schedule.schedule_id = class_attendance.schedule_id AND class_attendance.attendance_status = 'Registered'
 WHERE class_schedule.start_time LIKE '2025-02-01%'
 GROUP BY 
     classes.class_id,
@@ -35,16 +34,14 @@ INSERT INTO class_attendance (schedule_id, member_id, attendance_status)
 VALUES ( 
     (SELECT schedule_id 
      FROM class_schedule 
-     WHERE class_id = 1 
-     AND start_time LIKE '2025-02-01%'),
+     WHERE class_id = 1 AND start_time LIKE '2025-02-01%'),
     11,
     'Registered'
 );
 
 -- 4.4 
 DELETE FROM class_attendance
-WHERE schedule_id = 7
-AND member_id = 3;
+WHERE schedule_id = 7 AND member_id = 3;
 
 -- 4.5 
 SELECT 

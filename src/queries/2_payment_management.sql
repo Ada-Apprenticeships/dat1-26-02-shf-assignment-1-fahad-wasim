@@ -8,10 +8,9 @@ VALUES (11, 50.00, datetime('now'), 'Credit Card', 'Monthly membership fee');
 -- 2.2 
 SELECT 
     strftime('%Y-%m', payment_date) AS month,
-    SUM(amount) AS revenue
+    SUM(amount) AS revenue -- calculate total revenue in the month
 FROM payments
-WHERE payment_type = 'Monthly membership fee'
-AND payment_date BETWEEN '2024-11-01' AND '2025-02-29'
+WHERE payment_type = 'Monthly membership fee' AND payment_date BETWEEN '2024-11-01' AND '2025-02-29' -- monthly membership bought in this date range
 GROUP BY strftime('%Y-%m', payment_date)
 ORDER BY month;
 

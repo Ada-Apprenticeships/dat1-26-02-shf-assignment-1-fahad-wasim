@@ -32,9 +32,9 @@ LEFT JOIN (
     SELECT 
         location_id,
         DATE(check_in_time) AS visit_date,
-        COUNT(attendance_id) AS daily_total
+        COUNT(attendance_id) AS daily_total -- calculates total check ins per location per day
     FROM attendance
-    GROUP BY location_id, DATE(check_in_time)
+    GROUP BY location_id, DATE(check_in_time) -- daily totals per location
 ) AS daily_counts
-ON locations.location_id = daily_counts.location_id
+ON locations.location_id = daily_counts.location_id -- all locations appear, even if they have no attendance records
 GROUP BY locations.name;

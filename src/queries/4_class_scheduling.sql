@@ -5,10 +5,10 @@
 SELECT 
     classes.class_id,
     classes.name AS class_name,
-    staff.first_name || ' ' || staff.last_name AS instructor_name
+    staff.first_name || ' ' || staff.last_name AS instructor_name -- combines staff first name and last name
 FROM classes
-JOIN class_schedule ON classes.class_id = class_schedule.class_id
-JOIN staff ON class_schedule.staff_id = staff.staff_id;
+JOIN class_schedule ON classes.class_id = class_schedule.class_id -- classes linked to scheduled sessions
+JOIN staff ON class_schedule.staff_id = staff.staff_id; -- link sessions to instructors
 
 -- 4.2 
 SELECT 
@@ -16,11 +16,11 @@ SELECT
     classes.name,
     class_schedule.start_time,
     class_schedule.end_time,
-    classes.capacity - COUNT(class_attendance.member_id) AS available_spots
+    classes.capacity - COUNT(class_attendance.member_id) AS available_spots -- calculate the remaining capacity
 FROM classes
-JOIN class_schedule ON classes.class_id = class_schedule.class_id
-LEFT JOIN class_attendance 
-    ON class_schedule.schedule_id = class_attendance.schedule_id AND class_attendance.attendance_status = 'Registered'
+JOIN class_schedule ON classes.class_id = class_schedule.class_id -- only scheduled classes
+LEFT JOIN class_attendance -- ensures lessons are kept even with no members
+    ON class_schedule.schedule_id = class_attendance.schedule_id AND class_attendance.attendance_status = 'Registered' -- only count registered members
 WHERE class_schedule.start_time LIKE '2025-02-01%'
 GROUP BY 
     classes.class_id,
@@ -49,9 +49,9 @@ SELECT
     classes.name AS class_name,
     COUNT(class_attendance.member_id) AS registration_count
 FROM classes
-JOIN class_schedule ON classes.class_id = class_schedule.class_id
+JOIN class_schedule ON classes.class_id = class_schedule.class_id -- restricts to classes that have scheduled sessions
 JOIN class_attendance 
-    ON class_schedule.schedule_id = class_attendance.schedule_id
+    ON class_schedule.schedule_id = class_attendance.schedule_id -- only sessions with attendance records are counted
 WHERE class_attendance.attendance_status = 'Registered'
 GROUP BY classes.class_id, classes.name
 ORDER BY registration_count DESC
